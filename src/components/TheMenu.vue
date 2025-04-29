@@ -1,43 +1,27 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ConstantRoutes } from '@/router/index'
 
+import RecursiveMenu from './RecursiveMenu.vue'
+
 const router = useRouter()
+const route = useRoute()
 
 const isCollapse = ref(false)
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-
-const handleMenuItemClick = function ({ index: name }: { index: string }) {
-  router.push({ name })
-}
 </script>
 <template>
   <el-menu
-    default-active="2"
-    class="el-menu-vertical-demo"
+    :default-active="route.name"
     :collapse="isCollapse"
-    @open="handleOpen"
-    @close="handleClose"
+    :unique-opened="true"
+    class="el-menu-vertical-demo"
   >
-    <el-sub-menu v-for="menu in ConstantRoutes" :key="menu.name" :index="menu.name">
-      <template #title>
-        <span>{{ menu.meta?.title }}</span>
-      </template>
-      <el-menu-item-group v-if="menu.children">
-        <el-menu-item
-          v-for="childMenu in menu.children"
-          :key="childMenu.name"
-          :index="childMenu.name"
-          @click="handleMenuItemClick"
-          >{{ childMenu.meta?.title }}</el-menu-item
-        >
-      </el-menu-item-group>
-    </el-sub-menu>
+    <template v-for="child in ConstantRoutes" :key="child.name">
+      <RecursiveMenu v-if="child.children?.length" :menu-item="child" />
+      <el-menu-item v-else @click="router.push({ name: child.name })" :index="child.name">{{
+        child.meta?.title
+      }}</el-menu-item>
+    </template>
   </el-menu>
 </template>

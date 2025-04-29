@@ -1,5 +1,5 @@
 <template>
-  <div class="welcome">Vue3 Learning...</div>
+  <div class="welcome">Vue3 Learning.</div>
 </template>
 
 <style lang="scss">
